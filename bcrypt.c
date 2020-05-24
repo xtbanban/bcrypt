@@ -192,7 +192,7 @@ char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int
 	char* output;
 	if (times < 3) times = 3;
 again:
-	output = bcrypt_output(input, rounds, rand_num + times);
+	output = bcrypt_output(input, rounds, rand_num + times * 10);
 	if (!checkpw(input, output)) {
 		times--;
 		if (times) {
