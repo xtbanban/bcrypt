@@ -7,6 +7,8 @@
 #include "base64.c"
 #include "const.c"
 
+#define TEST
+
 #define BLOWFISH_F(x) \
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
 	^ ctx->sbox[2][(x >> 8) & 0xFF]) + ctx->sbox[3][x & 0xFF])
@@ -132,16 +134,27 @@ char* bcrypt(unsigned int rounds, unsigned char* salt, unsigned char* input) {
 
 char* getsalt(unsigned int rand_num) {
 	char* CODE = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	char* CODE4 = "eu.O";
+
+	char* orig = (char *)malloc(sizeof(char) * 17);
 	char* salt = (char *)malloc(sizeof(char) * 23);
 	
 	srand(time(NULL) + rand_num);
 	
-	for (int i = 0; i < 21; i++)
-		salt[i] = CODE[rand()%64];
+	for (int i = 0; i < 16; i++)
+		orig[i] = CODE[rand()%64];
 	
-	salt[21] = CODE4[rand()%4];
+	orig[16] = '\0';
+
+#ifdef TEST	
+	printf("orig = %s       len = %u\n", orig, strlen(orig));
+#endif	
+	salt = base64_encode(orig);
+	
 	salt[22] = '\0';
+#ifdef TEST		
+	printf("salt = %s len = %u\n", salt, strlen(salt));
+#endif	
+	free(orig);
 	
 	return salt;	
 }
@@ -174,13 +187,13 @@ int checkpw(unsigned char* input, char* bcrypt_output) {
 			salt[22] = '\0';
 
 			unsigned char* csalt = base64_decode(salt);
-			char* check = bcrypt(rounds, csalt, input);
+			char* output = bcrypt(rounds, csalt, input);
 			
-			if (strcmp(bcrypt_output, check) == 0) 
+			if (strcmp(bcrypt_output, output) == 0) 
 				ok = 1;
 			
 			free(csalt);
-			free(check);
+			free(output);
 		}
 	}
 	free(salt);
@@ -201,9 +214,10 @@ again:
 			goto next;
 		}	
 	}	
-next:	
+next:
+#ifdef TEST		
 	printf("times = %d\n", times);
-	
+#endif	
 	return output;	
 }	
 
@@ -211,7 +225,7 @@ int main() {
 	int k = 0;
 	char* input = "123456";
 	
-	for (int j = 0; j < 100; j++) {	
+	for (int j = 0; j < 10; j++) {	
 		printf("-------|--------------------||-----------------------------|-------\n");
 		char* output = bcrypt_output_sure(input, 10, j, 10);
 		printf("%s\n", output);
@@ -227,9 +241,8 @@ int main() {
 	}  
 	printf("-------------------------------------------------------------------\n");
 	printf("Check OK SUM = %d\n", k);
+	
 	//system("pause");
 	
 	return 0;	
 }
-
-
