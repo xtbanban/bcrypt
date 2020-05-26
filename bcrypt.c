@@ -7,7 +7,7 @@
 #include "base64.c"
 #include "const.c"
 
-#define TEST
+//#define TEST
 
 #define BLOWFISH_F(x) \
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
