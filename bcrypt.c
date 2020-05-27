@@ -7,7 +7,7 @@
 #include "base64.c"
 #include "const.c"
 
-//#define TEST
+#define TEST
 
 #define BLOWFISH_F(x) \
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
@@ -17,6 +17,8 @@ typedef struct blowfish_context_t_ {
 	unsigned int pbox[256];
 	unsigned int sbox[4][256];
 } blowfish_context_t;
+
+_Bool debug = 1;
 
 unsigned int get_word(unsigned char* text, int bytes, int* offset){
 	unsigned word = 0;
@@ -145,15 +147,16 @@ char* getsalt(unsigned int rand_num) {
 	
 	orig[16] = '\0';
 
-#ifdef TEST	
-	printf("orig = %s       len = %u\n", orig, strlen(orig));
-#endif	
+	if (debug)
+		printf("orig = %s       len = %u\n", orig, strlen(orig));
+
 	salt = base64_encode(orig);
 	
 	salt[22] = '\0';
-#ifdef TEST		
-	printf("salt = %s len = %u\n", salt, strlen(salt));
-#endif	
+	
+	if (debug)	
+		printf("salt = %s len = %u\n", salt, strlen(salt));
+
 	free(orig);
 	
 	return salt;	
@@ -215,32 +218,51 @@ again:
 		}	
 	}	
 next:
-#ifdef TEST		
-	printf("times = %d\n", times);
-#endif	
+	if (debug)
+		printf("times = %d\n", times);
+
 	return output;	
 }	
 
-int main() {	
-	int k = 0;
+int main(int argc, char* argv[]) {	
+	int k = 0, count;
 	char* input = "123456";
 	
-	for (int j = 0; j < 10; j++) {	
-		printf("-------|--------------------||-----------------------------|-------\n");
-		char* output = bcrypt_output_sure(input, 10, j, 10);
+	count = 1;
+	if (argc > 1) {
+	count = atoi(argv[1]);
+		if (count <= 0)
+			count = 1;
+	}		
+	
+	debug = 0;
+	if (argc > 2) {
+		if (strcmp(argv[2], "debug") == 0) 
+			debug = 1;
+	}	
+	
+	if (argc == 1) {
+		char* output = bcrypt_output_sure(input, 10, 0, 10);
 		printf("%s\n", output);
+	} else {
+		for (int j = 0; j < count; j++) {	
+			printf("-------|--------------------||-----------------------------|-------\n");
+			char* output = bcrypt_output_sure(input, 10, j, 10);
+			printf("%s\n", output);
 		
-		if (checkpw(input, output)) {
-			k++;
-			printf("Check OK.\n");
-		} else {
-			printf("Check Erro!\n");
-		}
+			if (checkpw(input, output)) {
+				k++;
+				printf("Check OK.\n");
+			} else {
+				printf("Check Erro!\n");
+			}
 		
-		free(output);
-	}  
-	printf("-------------------------------------------------------------------\n");
-	printf("Check OK SUM = %d\n", k);
+			free(output);
+		}  
+	
+		printf("-------------------------------------------------------------------\n");
+		printf("Check OK SUM = %d\n", k);
+	}
 	
 	//system("pause");
 	
