@@ -7,12 +7,12 @@
 #include "base64.c"
 #include "const.c"
 
-#define TEST
-
 #define BLOWFISH_F(x) \
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
 	^ ctx->sbox[2][(x >> 8) & 0xFF]) + ctx->sbox[3][x & 0xFF])
-	
+
+#include "bcrypt.h"
+
 typedef struct blowfish_context_t_ {
 	unsigned int pbox[256];
 	unsigned int sbox[4][256];
@@ -134,7 +134,7 @@ char* bcrypt(unsigned int rounds, unsigned char* salt, unsigned char* input) {
 
 /*  -----------below is myself ------------  */
 
-char* getsalt(unsigned int rand_num) {
+DLL_EXPORT char* getsalt(unsigned int rand_num) {
 	char* CODE = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	char* orig = (char *)malloc(sizeof(char) * 17);
@@ -162,7 +162,7 @@ char* getsalt(unsigned int rand_num) {
 	return salt;	
 }
 
-char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num) {
+DLL_EXPORT char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num) {
 	char* salt = getsalt(rand_num);
 	unsigned char* csalt = base64_decode(salt);
 	
@@ -176,7 +176,7 @@ char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand
 	return output;
 }
 
-int checkpw(unsigned char* input, char* bcrypt_output) {
+DLL_EXPORT int checkpw(unsigned char* input, char* bcrypt_output) {
 	int ok = 0, rounds;
 	char* salt = (char *)malloc(sizeof(char) * 23);
 
@@ -204,7 +204,7 @@ int checkpw(unsigned char* input, char* bcrypt_output) {
 	return ok;
 }	
 
-char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times) {
+DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times) {
 	char* output;
 	if (times < 3) times = 3;
 	unsigned int i = times;
@@ -225,6 +225,7 @@ next:
 	return output;	
 }	
 
+#ifndef BUILD_DLL
 int main(int argc, char* argv[]) {	
 	int k = 0, count;
 	char* input;
@@ -272,8 +273,9 @@ int main(int argc, char* argv[]) {
 
 		if (debug) {
 			for (int j = 0; j < count; j++) {	
-				printf("-------|--------------------||-----------------------------|-------\n");
+				printf("-------------------------------------------------------------------\n");
 				char* output = bcrypt_output_sure(input, 10, j, 10);
+				printf("---7---|---------22---------||--------------31-------------|\n");
 				printf("%s\n", output);
 		
 				if (checkpw(input, output)) {
@@ -301,3 +303,4 @@ int main(int argc, char* argv[]) {
 	
 	return 0;	
 }
+#endif
