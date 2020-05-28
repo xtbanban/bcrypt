@@ -30,4 +30,4 @@ C:\>gcc -c -DBUILD_DLL bcrypt.c
 C:\>gcc -shared -o bcrypt.dll bcrypt.o -Wl,--kill-at,--out-implib,libbcrypt.a
 
 #make exe with dll (-lbcrypt = -l libbcrypt.lib)
-gcc -o testdll.exe test.c -L./ -lbcrypt
+gcc -o test.exe test.c -L./ -lbcrypt
