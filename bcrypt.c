@@ -4,6 +4,10 @@
 #include <malloc.h>
 #include <time.h>
 
+#include "bcrypt.h"
+
+#ifdef BUILD_DLL
+
 #include "base64.c"
 #include "const.c"
 
@@ -11,14 +15,13 @@
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
 	^ ctx->sbox[2][(x >> 8) & 0xFF]) + ctx->sbox[3][x & 0xFF])
 
-#include "bcrypt.h"
 
 typedef struct blowfish_context_t_ {
 	unsigned int pbox[256];
 	unsigned int sbox[4][256];
 } blowfish_context_t;
 
-_Bool debug = 1;
+_Bool debug = 0;
 
 unsigned int get_word(unsigned char* text, int bytes, int* offset){
 	unsigned word = 0;
@@ -225,7 +228,10 @@ next:
 	return output;	
 }	
 
+#endif
+
 #ifndef BUILD_DLL
+
 int main(int argc, char* argv[]) {	
 	int k = 0, count;
 	char* input;
@@ -303,4 +309,5 @@ int main(int argc, char* argv[]) {
 	
 	return 0;	
 }
+
 #endif

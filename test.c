@@ -6,7 +6,7 @@
 
 #include "bcrypt.h"
 
-_Bool debug = 1;
+_Bool debug = 0;
 
 int main(int argc, char* argv[]) {	
 	int k = 0, count;
