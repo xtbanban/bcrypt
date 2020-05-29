@@ -202,7 +202,7 @@ DLL_EXPORT int checkpw(unsigned char* input, char* bcrypt_output) {
 	return ok;
 }	
 
-DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times, _Bool debug) {
+DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int times, unsigned int rand_num, _Bool debug) {
 	char* output;
 	if (times < 1) times = 1;
 	unsigned int i = times;
@@ -244,7 +244,7 @@ int main(int argc, char* argv[]) {
 		
 	} else if (argc == 2) {
 		input = argv[1];
-		char* output = bcrypt_output_sure(input, 10, 0, 10, 0);
+		char* output = bcrypt_output_sure(input, 10, 10, 0, 0);
 		printf("%s\n", output);
 		
 	} else {	
@@ -272,7 +272,7 @@ int main(int argc, char* argv[]) {
 		if (debug) {
 			for (int j = 0; j < count; j++) {	
 				printf("-------------------------------------------------------------------\n");
-				char* output = bcrypt_output_sure(input, 10, j, 10, 1);
+				char* output = bcrypt_output_sure(input, 10, 10, j, 1);
 				printf("---7---|---------22---------||--------------31-------------|\n");
 				printf("%s\n", output);
 		
@@ -291,7 +291,7 @@ int main(int argc, char* argv[]) {
 			
 		} else {
 			for (int j = 0; j < count; j++) {	
-				char* output = bcrypt_output_sure(input, 10, j, 10, 0);
+				char* output = bcrypt_output_sure(input, 10, 10, j, 0);
 				printf("%s\n", output);		
 			}
 		}	

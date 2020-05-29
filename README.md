@@ -14,10 +14,8 @@ printf("-text:password: bcrypt passwordw;\n");
 printf("-text:bcrypt_output(60bit).\n");
 
 dll:
-//extern __declspec(dllexport) char* getsalt(unsigned int rand_num);
-//extern __declspec(dllexport) char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num);
 extern __declspec(dllexport) int checkpw(unsigned char* input, char* bcrypt_output);
-extern __declspec(dllexport) char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times);
+extern __declspec(dllexport) char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int times);
 
 #------------use mingw64 gcc for windows.---------------
 # make for exe (gcc for ubuntu ok)

@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 		if (debug) {
 			for (int j = 0; j < count; j++) {	
 				printf("-------------------------------------------------------------------\n");
-				char* output = bcrypt_output_sure(input, 10, j, 10, 1);
+				char* output = bcrypt_output_sure(input, 10, 10, j, 1);
 				printf("---7---|---------22---------||--------------31-------------|\n");
 				printf("%s\n", output);
 		
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 			
 		} else {
 			for (int j = 0; j < count; j++) {	
-				char* output = bcrypt_output_sure(input, 10, j, 10, 0);
+				char* output = bcrypt_output_sure(input, 10, 10, j, 0);
 				printf("%s\n", output);		
 			}
 		}	

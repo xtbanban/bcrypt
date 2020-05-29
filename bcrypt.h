@@ -11,10 +11,8 @@
 extern "C" {
 #endif
 
-//extern DLL_EXPORT char* getsalt(unsigned int rand_num, _Bool debug);
-//extern DLL_EXPORT char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num, _Bool debug);
 extern DLL_EXPORT int checkpw(unsigned char* input, char* bcrypt_output);
-extern DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times, _Bool debug);
+extern DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int times, unsigned int rand_num, _Bool debug);
  
 #ifdef __cplusplus
 }
