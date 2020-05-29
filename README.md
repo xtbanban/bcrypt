@@ -19,8 +19,8 @@ dll:
 extern __declspec(dllexport) int checkpw(unsigned char* input, char* bcrypt_output);
 extern __declspec(dllexport) char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times);
 
-#------------use mingw32 gcc for windows.---------------
-# make for exe
+#------------use mingw64 gcc for windows.---------------
+# make for exe (gcc for ubuntu ok)
 C:\>gcc bcrypt.c -o test.exe 
 
 # make for bcrypt.o (-DBUILD_DLL = define BUILD_DLL)

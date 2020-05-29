@@ -146,14 +146,14 @@ char* getsalt(unsigned int rand_num, _Bool debug) {
 	orig[16] = '\0';
 
 	if (debug)
-		printf("orig = %s       len = %u\n", orig, strlen(orig));
+		printf("orig = %s       len = %lu\n", orig, strlen(orig));
 
 	salt = base64_encode(orig);
 	
 	salt[22] = '\0';
 	
 	if (debug)	
-		printf("salt = %s len = %u\n", salt, strlen(salt));
+		printf("salt = %s len = %lu\n", salt, strlen(salt));
 
 	free(orig);
 	
