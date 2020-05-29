@@ -6,16 +6,14 @@
 
 #include "bcrypt.h"
 
-_Bool debug = 0;
-
 int main(int argc, char* argv[]) {	
 	int k = 0, count;
 	char* input;
-	
-	debug = 0;
+    _Bool debug = 0;
 	
 	if (argc == 1) {
 		printf("%s [password] [times] [debug]\n", argv[0]);
+		printf(" [Need file bcrypt.dll].\n");
 		printf(" Get the bcrypt_output text(60bit).\n");
 		printf("-text:password: bcrypt passwordw;\n");
 		printf("-int:times: Output more result;\n");
@@ -28,7 +26,7 @@ int main(int argc, char* argv[]) {
 		
 	} else if (argc == 2) {
 		input = argv[1];
-		char* output = bcrypt_output_sure(input, 10, 0, 10);
+		char* output = bcrypt_output_sure(input, 10, 0, 10, 0);
 		printf("%s\n", output);
 		
 	} else {	
@@ -56,7 +54,7 @@ int main(int argc, char* argv[]) {
 		if (debug) {
 			for (int j = 0; j < count; j++) {	
 				printf("-------------------------------------------------------------------\n");
-				char* output = bcrypt_output_sure(input, 10, j, 10);
+				char* output = bcrypt_output_sure(input, 10, j, 10, 1);
 				printf("---7---|---------22---------||--------------31-------------|\n");
 				printf("%s\n", output);
 		
@@ -75,7 +73,7 @@ int main(int argc, char* argv[]) {
 			
 		} else {
 			for (int j = 0; j < count; j++) {	
-				char* output = bcrypt_output_sure(input, 10, j, 10);
+				char* output = bcrypt_output_sure(input, 10, j, 10, 0);
 				printf("%s\n", output);		
 			}
 		}	

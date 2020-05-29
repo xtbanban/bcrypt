@@ -6,8 +6,6 @@
 
 #include "bcrypt.h"
 
-#ifdef BUILD_DLL
-
 #include "base64.c"
 #include "const.c"
 
@@ -15,13 +13,10 @@
 	(((ctx->sbox[0][x >> 24] + ctx->sbox[1][(x >> 16) & 0xFF]) \
 	^ ctx->sbox[2][(x >> 8) & 0xFF]) + ctx->sbox[3][x & 0xFF])
 
-
 typedef struct blowfish_context_t_ {
 	unsigned int pbox[256];
 	unsigned int sbox[4][256];
 } blowfish_context_t;
-
-_Bool debug = 0;
 
 unsigned int get_word(unsigned char* text, int bytes, int* offset){
 	unsigned word = 0;
@@ -137,7 +132,7 @@ char* bcrypt(unsigned int rounds, unsigned char* salt, unsigned char* input) {
 
 /*  -----------below is myself ------------  */
 
-DLL_EXPORT char* getsalt(unsigned int rand_num) {
+char* getsalt(unsigned int rand_num, _Bool debug) {
 	char* CODE = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	char* orig = (char *)malloc(sizeof(char) * 17);
@@ -165,8 +160,8 @@ DLL_EXPORT char* getsalt(unsigned int rand_num) {
 	return salt;	
 }
 
-DLL_EXPORT char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num) {
-	char* salt = getsalt(rand_num);
+char* bcrypt_output(unsigned char* input, unsigned int rounds, unsigned int rand_num, _Bool debug) {
+	char* salt = getsalt(rand_num, debug);
 	unsigned char* csalt = base64_decode(salt);
 	
 	if (rounds < 8 || rounds > 32) rounds = 8;
@@ -207,12 +202,12 @@ DLL_EXPORT int checkpw(unsigned char* input, char* bcrypt_output) {
 	return ok;
 }	
 
-DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times) {
+DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int rand_num, unsigned int times, _Bool debug) {
 	char* output;
-	if (times < 3) times = 3;
+	if (times < 1) times = 1;
 	unsigned int i = times;
 again:
-	output = bcrypt_output(input, rounds, rand_num + i * 10);
+	output = bcrypt_output(input, rounds, rand_num + i * 10, debug);
 	if (!checkpw(input, output)) {
 		i--;
 		if (i) {
@@ -228,15 +223,12 @@ next:
 	return output;	
 }	
 
-#endif
-
 #ifndef BUILD_DLL
 
 int main(int argc, char* argv[]) {	
 	int k = 0, count;
 	char* input;
-	
-	debug = 0;
+	_Bool debug = 0;
 	
 	if (argc == 1) {
 		printf("%s [password] [times] [debug]\n", argv[0]);
@@ -252,7 +244,7 @@ int main(int argc, char* argv[]) {
 		
 	} else if (argc == 2) {
 		input = argv[1];
-		char* output = bcrypt_output_sure(input, 10, 0, 10);
+		char* output = bcrypt_output_sure(input, 10, 0, 10, 0);
 		printf("%s\n", output);
 		
 	} else {	
@@ -280,7 +272,7 @@ int main(int argc, char* argv[]) {
 		if (debug) {
 			for (int j = 0; j < count; j++) {	
 				printf("-------------------------------------------------------------------\n");
-				char* output = bcrypt_output_sure(input, 10, j, 10);
+				char* output = bcrypt_output_sure(input, 10, j, 10, 1);
 				printf("---7---|---------22---------||--------------31-------------|\n");
 				printf("%s\n", output);
 		
@@ -299,7 +291,7 @@ int main(int argc, char* argv[]) {
 			
 		} else {
 			for (int j = 0; j < count; j++) {	
-				char* output = bcrypt_output_sure(input, 10, j, 10);
+				char* output = bcrypt_output_sure(input, 10, j, 10, 0);
 				printf("%s\n", output);		
 			}
 		}	
@@ -308,6 +300,6 @@ int main(int argc, char* argv[]) {
 	//system("pause");
 	
 	return 0;	
-}
+}	
 
 #endif
