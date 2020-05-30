@@ -17,14 +17,18 @@ dll:
 extern __declspec(dllexport) int checkpw(unsigned char* input, char* bcrypt_output);
 extern __declspec(dllexport) char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int times);
 
-#------------use mingw64 gcc for windows.---------------
-# make for exe (gcc for ubuntu ok)
-C:\>gcc bcrypt.c -o test.exe 
+#------------use mingw64 gcc for windows7----------------
+#------------use mingw32 gcc for windows7----------------
+#------------use mingw64 gcc for windows10---------------
+#------------use gcc for ubuntu---------------
+# make for exe 
+gcc bcrypt.c -o test.exe 
 
+#------------use mingw32 gcc for windows7---------------
 # make for bcrypt.o (-DBUILD_DLL = define BUILD_DLL)
-C:\>gcc -c -DBUILD_DLL bcrypt.c
+gcc -c -DBUILD_DLL bcrypt.c
 # link for bcrypt.dll libbcrypt.a
-C:\>gcc -shared -o bcrypt.dll bcrypt.o -Wl,--kill-at,--out-implib,libbcrypt.a
+gcc -shared -o bcrypt.dll bcrypt.o -Wl,--kill-at,--out-implib,libbcrypt.a
 
 # make exe with dll use libbcrypt.a (-lbcrypt = libbcrypt.a)
-C:\>gcc -o testdll.exe test.c -L./ -lbcrypt
+gcc -o testdll.exe test.c -L./ -lbcrypt
