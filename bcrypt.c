@@ -205,7 +205,9 @@ DLL_EXPORT int checkpw(unsigned char* input, char* bcrypt_output) {
 DLL_EXPORT char* bcrypt_output_sure(unsigned char* input, unsigned int rounds, unsigned int times, unsigned int rand_num, _Bool debug) {
 	char* output;
 	if (times < 1) times = 1;
+	if (times > 10) times = 10;
 	unsigned int i = times;
+	//if (debug == NULL) debug = 0;
 again:
 	output = bcrypt_output(input, rounds, rand_num + i * 10, debug);
 	if (!checkpw(input, output)) {
@@ -221,85 +223,4 @@ next:
 		printf("trys = %d / %d\n", (times - i + 1), times);
 
 	return output;	
-}	
-
-#ifndef BUILD_DLL
-
-int main(int argc, char* argv[]) {	
-	int k = 0, count;
-	char* input;
-	_Bool debug = 0;
-	
-	if (argc == 1) {
-		printf("%s [password] [times] [debug]\n", argv[0]);
-		printf(" Get the bcrypt_output text(60bit).\n");
-		printf("-text:password: bcrypt passwordw;\n");
-		printf("-int:times: Output more result;\n");
-		printf("-debug: Show debug messages.\n");
-		printf("------------------------------;\n");
-		printf("%s [password] [bcrypt_output]\n", argv[0]);
-		printf(" Check the bcrypt_output text(60bit).\n");
-		printf("-text:password: bcrypt passwordw;\n");
-		printf("-text:bcrypt_output(60bit).\n");
-		
-	} else if (argc == 2) {
-		input = argv[1];
-		char* output = bcrypt_output_sure(input, 10, 10, 0, 0);
-		printf("%s\n", output);
-		
-	} else {	
-		input = argv[1];
-		
-		char* check = argv[2];
-		if (strlen(check) == 60) {
-			if (checkpw(input, check)) {
-				printf("Check OK.\n");	
-			} else {
-				printf("Check Erro!\n");
-			}			
-			return 0;
-		}	
-		
-		count = atoi(argv[2]);
-		if (count <= 0)
-			count = 1;
-
-		if (argc > 3) {
-			if (strcmp(argv[3], "debug") == 0) 
-				debug = 1;
-		}
-
-		if (debug) {
-			for (int j = 0; j < count; j++) {	
-				printf("-------------------------------------------------------------------\n");
-				char* output = bcrypt_output_sure(input, 10, 10, j, 1);
-				printf("---7---|---------22---------||--------------31-------------|\n");
-				printf("%s\n", output);
-		
-				if (checkpw(input, output)) {
-					k++;
-					printf("Check OK.\n");
-				} else {
-					printf("Check Erro!\n");
-				}
-		
-				free(output);
-			}  
-	
-			printf("-------------------------------------------------------------------\n");
-			printf("Check OK SUM = %d\n", k);
-			
-		} else {
-			for (int j = 0; j < count; j++) {	
-				char* output = bcrypt_output_sure(input, 10, 10, j, 0);
-				printf("%s\n", output);		
-			}
-		}	
-	}
-	
-	//system("pause");
-	
-	return 0;	
-}	
-
-#endif
+}
