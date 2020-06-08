@@ -425,6 +425,26 @@ begin
   end;
 end;
 
+function MYTBytesToStr(const buffer: TBytes): string;
+var
+  temp: string;
+begin
+  //temp := string(pointer(buffer));
+  setlength(temp,length(buffer));
+  CopyMemory(Pointer(temp), @buffer[0], Length(buffer));
+  Result := temp;
+end;
+
+function MYStrToTBytes(const temp: string): TBytes;
+var
+  buffer: TBytes;
+begin
+  SetLength(buffer, Length(temp) + 1);
+  Move(temp[1], buffer[0], Length(temp));
+  buffer[high(buffer)] := 0;
+  Result := buffer;
+end;
+
 function StreamToWord(const Data: TBytes; var offset: integer): DWord;
 var
   i: integer;
