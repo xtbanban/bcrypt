@@ -22,7 +22,7 @@ extern __declspec(dllexport) char* bcrypt_output_sure(unsigned char* input, unsi
 #------------use mingw64 gcc for windows10---------------
 #------------use gcc for ubuntu---------------
 # make for exe 
-gcc bcrypt.c -o test.exe 
+gcc bcrypt.c test.c -o test.exe 
 
 #------------use mingw32 gcc for windows7---------------
 # make for bcrypt.o (-DBUILD_DLL = define BUILD_DLL)
