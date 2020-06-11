@@ -8,6 +8,7 @@ uses
 //----Delphi7----
 type
   TBytes = array of Byte;
+//---------------
 
 function BsdBase64Encode(const Data: TBytes; len: integer): ansistring;
 function checkPassword(const Str: string; const Hash: ansistring): boolean;
