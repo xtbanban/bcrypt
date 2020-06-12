@@ -3,7 +3,7 @@ program Project_bcrypt;
 uses
   Forms,
   Unit_bcrypt in 'Unit_bcrypt.pas' {Form1},
-  BCrypt in 'D:\Mytools\Delphi\MyProjects\BCrypt.pas';
+  BCrypt in 'BCrypt.pas';
 
 {$R *.res}
 

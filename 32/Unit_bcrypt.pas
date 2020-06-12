@@ -48,11 +48,14 @@ type
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
+    SpeedButton_getsalt: TSpeedButton;
+    Label13: TLabel;
     procedure BitBtn_bcryptClick(Sender: TObject);
     procedure BitBtn_checkClick(Sender: TObject);
     procedure BitBtn_outpuy_1Click(Sender: TObject);
     procedure BitBtn_check_1Click(Sender: TObject);
     procedure SpeedButton_upClick(Sender: TObject);
+    procedure SpeedButton_getsaltClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -133,6 +136,11 @@ var
 begin
   key := Trim(Edit_key_1.Text);
   org := Trim(Edit_org_1.Text);
+  if (key = '') then
+  begin
+    Label_note_1.Caption := 'Pleas input key.';
+    Exit;
+  end;
   if (Length(org) < 16) then
   begin
     Label_note_1.Caption := 'org length must move then 16';
@@ -163,6 +171,11 @@ begin
   Edit_output.Text := Edit_output_1.Text;
   Label_tip.Caption := '';
   BitBtn_check.Click;
+end;
+
+procedure TForm1.SpeedButton_getsaltClick(Sender: TObject);
+begin
+  Edit_org_1.Text := BCrypt.MyGetSalt;
 end;
 
 end.

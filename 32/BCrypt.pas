@@ -1,14 +1,16 @@
 unit BCrypt;
-
+
 interface
 
 uses
-  Classes, SysUtils, Types, Windows;
+  Classes, SysUtils, Types, Windows, activex;
 
 //----Delphi7 begin----
 type
   TBytes = array of Byte;
 //----Delphi7 end -----
+
+function MyGetSalt: string;
 
 function BsdBase64Encode(const Data: TBytes; len: integer): ansistring;
 
@@ -47,7 +49,7 @@ const
   //bcrypt uses 128-bit (16-byte) salt (This isn't an adjustable parameter, just a name for a constant)
 
   BLOWFISH_NUM_ROUNDS = 16;
-  BsdBase64EncodeTable: array[0..63] of char =    { 0:}'./' +    { 2:}'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +    {28:}'abcdefghijklmnopqrstuvwxyz' +    {54:}'0123456789';
+  BsdBase64EncodeTable: array[0..63] of char =  { 0:}'./' +  { 2:}'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +  {28:}'abcdefghijklmnopqrstuvwxyz' +  {54:}'0123456789';
   //the traditional base64 encode table:
   //'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
   //'abcdefghijklmnopqrstuvwxyz' +
@@ -177,7 +179,7 @@ var
   temp: string;
 begin
   //temp := string(pointer(buffer));
-  setlength(temp,length(buffer));
+  setlength(temp, length(buffer));
   CopyMemory(Pointer(temp), @buffer[0], Length(buffer));
   Result := temp;
 end;
@@ -339,6 +341,19 @@ begin
   end;
 end;
 
+function MyGetSalt: string;
+var
+  sGUID: string;
+  TmpGUID: TGUID;
+begin
+  if CoCreateGUID(TmpGUID) = S_OK then
+  begin
+    sGUID := GUIDToString(TmpGUID);
+    sGUID := Copy(StringReplace(sGUID, '-', '', [rfReplaceAll, rfIgnoreCase]), 2, 16);
+  end;
+  Result := sGUID;
+end;
+
 function FormatPasswordHashForBsd(const salt, hash: TBytes): ansistring;
 var
   saltString: ansistring;
@@ -368,3 +383,4 @@ end;
 
 end.
 
+

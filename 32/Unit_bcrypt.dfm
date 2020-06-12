@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 1018
-  Top = 360
+  Left = 1152
+  Top = 157
   Width = 738
-  Height = 628
-  Caption = 'Bcrypt use dll'
+  Height = 605
+  Caption = 'Bcrypt use dll $ use unit'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,7 @@ object Form1: TForm1
   OldCreateOrder = False
   DesignSize = (
     722
-    590)
+    567)
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel
@@ -31,11 +31,17 @@ object Form1: TForm1
     Caption = 'Bcrypt:'
   end
   object Label_tip: TLabel
-    Left = 48
+    Left = 40
     Top = 184
     Width = 32
     Height = 16
     Caption = 'Note'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = #23435#20307
+    Font.Style = [fsItalic]
+    ParentFont = False
   end
   object Bevel1: TBevel
     Left = 24
@@ -95,6 +101,12 @@ object Form1: TForm1
     Width = 32
     Height = 16
     Caption = 'Note'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = #23435#20307
+    Font.Style = [fsItalic]
+    ParentFont = False
   end
   object Bevel4: TBevel
     Left = 24
@@ -222,6 +234,26 @@ object Form1: TForm1
     Width = 64
     Height = 16
     Caption = '(60byte)'
+  end
+  object SpeedButton_getsalt: TSpeedButton
+    Left = 392
+    Top = 313
+    Width = 23
+    Height = 22
+    OnClick = SpeedButton_getsaltClick
+  end
+  object Label13: TLabel
+    Left = 536
+    Top = 280
+    Width = 135
+    Height = 27
+    Caption = 'Use Unit.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGreen
+    Font.Height = -27
+    Font.Name = #23435#20307
+    Font.Style = [fsBold, fsItalic]
+    ParentFont = False
   end
   object Edit_key: TEdit
     Left = 96
