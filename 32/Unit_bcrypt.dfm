@@ -95,7 +95,7 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-  object Label_note_1: TLabel
+  object Label_tip_1: TLabel
     Left = 40
     Top = 488
     Width = 32
@@ -187,8 +187,8 @@ object Form1: TForm1
   end
   object SpeedButton_up: TSpeedButton
     Left = 552
-    Top = 426
-    Width = 127
+    Top = 424
+    Width = 129
     Height = 33
     Caption = 'DLL Check'
     OnClick = SpeedButton_upClick
@@ -254,6 +254,14 @@ object Form1: TForm1
     Font.Name = #23435#20307
     Font.Style = [fsBold, fsItalic]
     ParentFont = False
+  end
+  object SpeedButton_down: TSpeedButton
+    Left = 560
+    Top = 128
+    Width = 129
+    Height = 33
+    Caption = 'Unit Check'
+    OnClick = SpeedButton_downClick
   end
   object Edit_key: TEdit
     Left = 96
@@ -329,7 +337,7 @@ object Form1: TForm1
     TabOrder = 8
     OnClick = BitBtn_check_1Click
   end
-  object Edit3: TEdit
+  object Edit_round1: TEdit
     Left = 448
     Top = 280
     Width = 49

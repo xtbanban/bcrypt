@@ -16,7 +16,7 @@ function BsdBase64Encode(const Data: TBytes; len: integer): ansistring;
 
 function checkPassword(const Str: string; const Hash: ansistring): boolean;
 
-function HashPassword(const Str: string; const salt: ansistring): ansistring;
+function HashPassword(const str: string; const salt: ansistring; round: DWord): ansistring;
 
 implementation
 
@@ -302,19 +302,20 @@ begin
   Move(PBoxOrg, PBox, Sizeof(PBox));
 end;
 
-function CryptRaw(const key, salt: TBytes): TBytes;
+function CryptRaw(const key, salt: TBytes; round: DWord): TBytes;
 var
   cData: array[0..5] of DWord;
   cLen: integer;
-  round: DWord;
+  rounds: DWord;
   i, k: integer;
 begin
+  if (round < 8) or (round > 32) then round := 8;
   Move(MagicText[0], cData[0], Sizeof(MagicText));
   cLen := Length(cData);
-  round := 1 shl 10;
   InitializeKey();
   EKSKey(salt, key);
-  for i := 1 to round do
+  rounds := 1 shl round;
+  for i := 1 to rounds do
   begin
     NKey(key);
     NKey(salt);
@@ -354,17 +355,17 @@ begin
   Result := sGUID;
 end;
 
-function FormatPasswordHashForBsd(const salt, hash: TBytes): ansistring;
+function FormatPasswordHashForBsd(const salt, hash: TBytes; round: DWord): ansistring;
 var
   saltString: ansistring;
   hashString: ansistring;
 begin
   saltString := BsdBase64Encode(salt, Length(salt));
   hashString := BsdBase64Encode(hash, Length(MagicText) * 4 - 1);
-  Result := Format('$2a$10$%s%s', [saltString, hashString]);
+  Result := Format('$2a$%0.2u$%s%s', [round, saltString, hashString]);
 end;
 
-function HashPassword(const str: string; const salt: ansistring): ansistring;
+function HashPassword(const str: string; const salt: ansistring; round: DWord): ansistring;
 var
   password: ansistring;
   key, csalt, Hash: TBytes;
@@ -372,13 +373,25 @@ begin
   password := AnsiToUtf8(str);
   key := MYStrToTBytes(password);
   csalt := BsdBase64Decode(salt);
-  Hash := CryptRaw(key, csalt);
-  Result := FormatPasswordHashForBsd(csalt, Hash);
+  Hash := CryptRaw(key, csalt, round);
+  Result := FormatPasswordHashForBsd(csalt, Hash, round);
 end;
 
 function checkPassword(const Str: string; const Hash: ansistring): boolean;
+var
+  s, salt, output: string;
+  round: DWord;
 begin
-  //
+  Result := False;
+  if Length(Hash) <> 60 then exit;
+  s := Copy(Hash, 1, 4);
+  if (s <> '$2a$') then exit;
+  s := Copy(Hash, 5, 2);
+  round := StrToIntDef(s, 10);
+  salt := Copy(Hash, 8, 22);
+
+  output := HashPassword(Str, salt, round);
+  if (Hash = output) then Result := True;
 end;
 
 end.

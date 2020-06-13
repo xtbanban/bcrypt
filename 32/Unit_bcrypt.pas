@@ -25,10 +25,10 @@ type
     Edit_output_1: TEdit;
     BitBtn_outpuy_1: TBitBtn;
     BitBtn_check_1: TBitBtn;
-    Edit3: TEdit;
+    Edit_round1: TEdit;
     Bevel2: TBevel;
     Bevel3: TBevel;
-    Label_note_1: TLabel;
+    Label_tip_1: TLabel;
     Bevel4: TBevel;
     Label7: TLabel;
     Bevel5: TBevel;
@@ -50,12 +50,14 @@ type
     Label12: TLabel;
     SpeedButton_getsalt: TSpeedButton;
     Label13: TLabel;
+    SpeedButton_down: TSpeedButton;
     procedure BitBtn_bcryptClick(Sender: TObject);
     procedure BitBtn_checkClick(Sender: TObject);
     procedure BitBtn_outpuy_1Click(Sender: TObject);
     procedure BitBtn_check_1Click(Sender: TObject);
     procedure SpeedButton_upClick(Sender: TObject);
     procedure SpeedButton_getsaltClick(Sender: TObject);
+    procedure SpeedButton_downClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -132,18 +134,19 @@ end;
 procedure TForm1.BitBtn_outpuy_1Click(Sender: TObject);
 var
   key, org, salt, output: ansistring;
-  keyBtypts, saltBytes: TBytes;
+  keyBtypts: TBytes;
 begin
   key := Trim(Edit_key_1.Text);
-  org := Trim(Edit_org_1.Text);
   if (key = '') then
   begin
-    Label_note_1.Caption := 'Pleas input key.';
+    Label_tip_1.Caption := 'Pleas input key.';
     Exit;
   end;
+  SpeedButton_getsalt.Click;
+  org := Trim(Edit_org_1.Text);
   if (Length(org) < 16) then
   begin
-    Label_note_1.Caption := 'org length must move then 16';
+    Label_tip_1.Caption := 'org length must move then 16';
     exit;
   end;
   SetLength(keyBtypts, 17);
@@ -152,17 +155,31 @@ begin
   salt := BCrypt.BsdBase64Encode(keyBtypts, Length(keyBtypts));
   SetLength(salt, 22);
   
-  output := BCrypt.HashPassword(key, salt);
+  output := BCrypt.HashPassword(key, salt, StrTointDef(Edit_round1.Text, 10));
 
   Edit_output_1.Text := output;
   Edit_salt.Text := salt;
 
-  Label_note_1.Caption := 'Bcrypt ok.';
+  Label_tip_1.Caption := 'Bcrypt ok.';
 end;
 
 procedure TForm1.BitBtn_check_1Click(Sender: TObject);
 begin
-  //
+  Label_tip_1.Caption := 'Check...';
+  Label_tip_1.Refresh;
+  
+  if BCrypt.checkPassword(Edit_key_1.Text, Edit_output_1.Text) then
+  begin
+    Label_tip_1.Caption := 'Check OK.';
+  end else
+  begin
+    Label_tip_1.Caption := 'Check Erro!';
+  end;
+end;
+
+procedure TForm1.SpeedButton_getsaltClick(Sender: TObject);
+begin
+  Edit_org_1.Text := BCrypt.MyGetSalt;
 end;
 
 procedure TForm1.SpeedButton_upClick(Sender: TObject);
@@ -173,9 +190,12 @@ begin
   BitBtn_check.Click;
 end;
 
-procedure TForm1.SpeedButton_getsaltClick(Sender: TObject);
+procedure TForm1.SpeedButton_downClick(Sender: TObject);
 begin
-  Edit_org_1.Text := BCrypt.MyGetSalt;
+  Edit_key_1.Text := Edit_key.Text;
+  Edit_output_1.Text := Edit_output.Text;
+  Label_tip_1.Caption := '';
+  BitBtn_check_1.Click;
 end;
 
 end.
