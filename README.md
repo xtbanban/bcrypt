@@ -32,4 +32,7 @@ gcc -shared -o bcrypt.dll bcrypt.o -Wl,--kill-at,--out-implib,libbcrypt.a
 
 # make exe with dll use libbcrypt.a (-lbcrypt = libbcrypt.a)
 gcc -o testdll.exe test.c -L./ -lbcrypt
+<<<<<<< HEAD
 (testdll.exe with bcrypt.dll)
+=======
+>>>>>>> 1769373aa659b6b268e46ce04bf6050ff8a5077a
